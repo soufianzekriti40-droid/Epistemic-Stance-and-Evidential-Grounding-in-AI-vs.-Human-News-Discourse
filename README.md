@@ -53,71 +53,75 @@ Total corpus size:
 ## Project Pipeline
 
 ```text
-Human News Sources
-        │
-        ▼
+Professional News Sources
+          │
+          ▼
 Web Scraping (Fundus)
-        │
-        ▼
+          │
+          ▼
+Human Corpus (JSON)
+
+          Headlines
+               │
+               ▼
+GPT-5.4-mini (OpenAI API)
+               │
+               ▼
+AI Corpus (JSON)
+               │
+               ▼
 Corpus Cleaning & Normalisation
-        │
-        ▼
+               │
+               ▼
 AntConc Exploration
 (KWIC • Frequency • N-grams)
-        │
-        ▼
+               │
+               ▼
 Feature Engineering (spaCy)
-        │
-        ▼
+               │
+               ▼
 Statistical Analysis
 (Mann-Whitney U)
-        │
-        ▼
+               │
+               ▼
 Random Forest Classification
-        │
-        ▼
+               │
+               ▼
 Visualisation & Interpretation
 ```
 
----
-
 ## Methodology
 
-### 1. Corpus Collection
+### 1. Human Corpus Collection
 
-Professional news articles were automatically collected using **Fundus** and stored in JSON format. Matching AI articles were generated through the OpenAI API using the original headlines.
+Professional news articles were collected automatically using **Fundus** from BBC News, The Guardian, AP News, and CNBC. Each article was stored in JSON format together with its headline, metadata, and source URL.
 
-### 2. Corpus Cleaning
+### 2. AI Corpus Generation
 
-A Python pipeline removed boilerplate text, normalized formatting, validated article content, and prepared comparable corpora for analysis.
+For every human article, the original headline was submitted to **GPT-5.4-mini** through the OpenAI API using a standardized zero-shot prompt. The model generated a hard-news article matching the target length of the corresponding human article while having no access to external news sources.
 
-### 3. Exploratory Analysis
+### 3. Corpus Cleaning
 
-A pilot corpus was explored in **AntConc** using frequency lists, KWIC concordances, and N-gram analysis. The exploratory stage informed the final selection of discourse features.
+A Python pipeline removed boilerplate text, normalized formatting, validated article content, and prepared comparable human and AI corpora.
 
-### 4. Feature Engineering
+### 4. Exploratory Analysis
 
-A custom spaCy pipeline performs:
+A pilot corpus was explored in AntConc using frequency lists, KWIC concordances, and N-gram analysis to identify recurring discourse patterns and guide feature selection.
 
-* Tokenization
-* Lemmatization
-* Part-of-speech tagging
-* Dependency parsing
+### 5. Feature Engineering
 
-The following discourse features are extracted:
+A custom spaCy pipeline applied tokenization, lemmatization, POS tagging, and dependency parsing to extract:
 
 * Hedges
 * Boosters
 * Attribution markers
 * Passive voice (control variable)
 
-Feature frequencies are normalized per 1,000 words.
+Feature frequencies were normalized per 1,000 words.
 
-### 5. Statistical Analysis
+### 6. Statistical Analysis
 
-Feature distributions are compared using **Mann-Whitney U tests**, followed by **Random Forest classification** to evaluate the predictive power of the discourse features.
-
----
+Feature distributions were compared using Mann-Whitney U tests. A Random Forest classifier was then trained to evaluate the predictive power of the discourse features.
 
 ## Repository Structure
 
